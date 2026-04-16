@@ -1,0 +1,386 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {
+    "hyperedges": [
+      {
+        "id": "enterprise_features",
+        "label": "Enterprise Feature Set",
+        "nodes": [
+          "saml_sso",
+          "custom_roles",
+          "sla_policies",
+          "audit_logs",
+          "companies_model",
+          "agent_capacity"
+        ],
+        "relation": "implement",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0
+      },
+      {
+        "id": "multi_tenant_pattern",
+        "label": "Multi-Tenant Data Isolation",
+        "nodes": [
+          "account_model",
+          "account_id_isolation",
+          "conversation_model",
+          "contact_model",
+          "single_database"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "label": "Enterprise Module",
+      "file_type": "code",
+      "source_file": "enterprise/lib/enterprise.rb",
+      "id": "enterprise_module",
+      "community": 0,
+      "norm_label": "enterprise module"
+    },
+    {
+      "label": "Enterprise License",
+      "file_type": "code",
+      "source_file": "enterprise/LICENSE",
+      "id": "enterprise_license",
+      "community": 0,
+      "norm_label": "enterprise license"
+    },
+    {
+      "label": "Account Model (Tenant)",
+      "file_type": "code",
+      "source_file": "app/models/account.rb",
+      "id": "account_model",
+      "community": 1,
+      "norm_label": "account model (tenant)"
+    },
+    {
+      "label": "Single Database Architecture",
+      "file_type": "code",
+      "source_file": "config/database.yml",
+      "id": "single_database",
+      "community": 2,
+      "norm_label": "single database architecture"
+    },
+    {
+      "label": "Account ID Isolation",
+      "file_type": "code",
+      "source_file": "app/models/concerns.rb",
+      "id": "account_id_isolation",
+      "community": 2,
+      "norm_label": "account id isolation"
+    },
+    {
+      "label": "Premium Features",
+      "file_type": "code",
+      "source_file": "enterprise/config/premium_features.yml",
+      "id": "premium_features",
+      "community": 3,
+      "norm_label": "premium features"
+    },
+    {
+      "label": "SAML SSO Authentication",
+      "file_type": "code",
+      "source_file": "enterprise/config/initializers/omniauth_saml.rb",
+      "id": "saml_sso",
+      "community": 0,
+      "norm_label": "saml sso authentication"
+    },
+    {
+      "label": "Custom Roles",
+      "file_type": "code",
+      "source_file": "enterprise/app/models/custom_role.rb",
+      "id": "custom_roles",
+      "community": 0,
+      "norm_label": "custom roles"
+    },
+    {
+      "label": "SLA Policies",
+      "file_type": "code",
+      "source_file": "enterprise/app/models/sla_policy.rb",
+      "id": "sla_policies",
+      "community": 0,
+      "norm_label": "sla policies"
+    },
+    {
+      "label": "Audit Logs",
+      "file_type": "code",
+      "source_file": "enterprise/app/models/audit_log.rb",
+      "id": "audit_logs",
+      "community": 0,
+      "norm_label": "audit logs"
+    },
+    {
+      "label": "Companies/Organizations",
+      "file_type": "code",
+      "source_file": "enterprise/app/models/company.rb",
+      "id": "companies_model",
+      "community": 1,
+      "norm_label": "companies/organizations"
+    },
+    {
+      "label": "Agent Capacity Policies",
+      "file_type": "code",
+      "source_file": "enterprise/app/models/agent_capacity_policy.rb",
+      "id": "agent_capacity",
+      "community": 0,
+      "norm_label": "agent capacity policies"
+    },
+    {
+      "label": "AccountUser Join Table",
+      "file_type": "code",
+      "source_file": "app/models/account_user.rb",
+      "id": "account_user_join",
+      "community": 1,
+      "norm_label": "accountuser join table"
+    },
+    {
+      "label": "Conversation Model",
+      "file_type": "code",
+      "source_file": "app/models/conversation.rb",
+      "id": "conversation_model",
+      "community": 2,
+      "norm_label": "conversation model"
+    },
+    {
+      "label": "Contact Model",
+      "file_type": "code",
+      "source_file": "app/models/contact.rb",
+      "id": "contact_model",
+      "community": 2,
+      "norm_label": "contact model"
+    },
+    {
+      "label": "Enterprise Module Injection",
+      "file_type": "code",
+      "source_file": "config/initializers/01_inject_enterprise_edition_module.rb",
+      "id": "inject_enterprise",
+      "community": 0,
+      "norm_label": "enterprise module injection"
+    },
+    {
+      "label": "Plan Management",
+      "file_type": "code",
+      "source_file": "enterprise/app/models/enterprise/account/plan_usage_and_limits.rb",
+      "id": "plan_management",
+      "community": 1,
+      "norm_label": "plan management"
+    },
+    {
+      "label": "Branding Removal Feature",
+      "file_type": "code",
+      "source_file": "enterprise/config/premium_features.yml",
+      "id": "disable_branding",
+      "community": 3,
+      "norm_label": "branding removal feature"
+    },
+    {
+      "label": "Captain AI Integration",
+      "file_type": "code",
+      "source_file": "enterprise/config/premium_features.yml",
+      "id": "captain_integration",
+      "community": 3,
+      "norm_label": "captain ai integration"
+    }
+  ],
+  "links": [
+    {
+      "relation": "requires",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "_src": "enterprise_module",
+      "_tgt": "enterprise_license",
+      "source": "enterprise_module",
+      "target": "enterprise_license"
+    },
+    {
+      "relation": "provides",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "_src": "enterprise_module",
+      "_tgt": "premium_features",
+      "source": "enterprise_module",
+      "target": "premium_features"
+    },
+    {
+      "relation": "adds",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "_src": "enterprise_module",
+      "_tgt": "saml_sso",
+      "source": "enterprise_module",
+      "target": "saml_sso"
+    },
+    {
+      "relation": "adds",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "_src": "enterprise_module",
+      "_tgt": "custom_roles",
+      "source": "enterprise_module",
+      "target": "custom_roles"
+    },
+    {
+      "relation": "adds",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "_src": "enterprise_module",
+      "_tgt": "sla_policies",
+      "source": "enterprise_module",
+      "target": "sla_policies"
+    },
+    {
+      "relation": "adds",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "_src": "enterprise_module",
+      "_tgt": "audit_logs",
+      "source": "enterprise_module",
+      "target": "audit_logs"
+    },
+    {
+      "relation": "adds",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "_src": "enterprise_module",
+      "_tgt": "companies_model",
+      "source": "enterprise_module",
+      "target": "companies_model"
+    },
+    {
+      "relation": "adds",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "_src": "enterprise_module",
+      "_tgt": "agent_capacity",
+      "source": "enterprise_module",
+      "target": "agent_capacity"
+    },
+    {
+      "relation": "loads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "_src": "inject_enterprise",
+      "_tgt": "enterprise_module",
+      "source": "enterprise_module",
+      "target": "inject_enterprise"
+    },
+    {
+      "relation": "stored_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "_src": "account_model",
+      "_tgt": "single_database",
+      "source": "account_model",
+      "target": "single_database"
+    },
+    {
+      "relation": "has_many_through",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "_src": "account_model",
+      "_tgt": "account_user_join",
+      "source": "account_model",
+      "target": "account_user_join"
+    },
+    {
+      "relation": "tracks",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "_src": "account_model",
+      "_tgt": "plan_management",
+      "source": "account_model",
+      "target": "plan_management"
+    },
+    {
+      "relation": "has_many",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "_src": "account_model",
+      "_tgt": "companies_model",
+      "source": "account_model",
+      "target": "companies_model"
+    },
+    {
+      "relation": "uses_pattern",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "_src": "single_database",
+      "_tgt": "account_id_isolation",
+      "source": "single_database",
+      "target": "account_id_isolation"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "_src": "conversation_model",
+      "_tgt": "account_id_isolation",
+      "source": "account_id_isolation",
+      "target": "conversation_model"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "_src": "contact_model",
+      "_tgt": "account_id_isolation",
+      "source": "account_id_isolation",
+      "target": "contact_model"
+    },
+    {
+      "relation": "includes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "_src": "premium_features",
+      "_tgt": "disable_branding",
+      "source": "premium_features",
+      "target": "disable_branding"
+    },
+    {
+      "relation": "includes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "_src": "premium_features",
+      "_tgt": "captain_integration",
+      "source": "premium_features",
+      "target": "captain_integration"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "enterprise_features",
+      "label": "Enterprise Feature Set",
+      "nodes": [
+        "saml_sso",
+        "custom_roles",
+        "sla_policies",
+        "audit_logs",
+        "companies_model",
+        "agent_capacity"
+      ],
+      "relation": "implement",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "id": "multi_tenant_pattern",
+      "label": "Multi-Tenant Data Isolation",
+      "nodes": [
+        "account_model",
+        "account_id_isolation",
+        "conversation_model",
+        "contact_model",
+        "single_database"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    }
+  ]
+}
