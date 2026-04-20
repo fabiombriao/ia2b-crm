@@ -13,4 +13,5 @@ class PlatformApp < ApplicationRecord
   validates :name, presence: true
 
   has_many :platform_app_permissibles, dependent: :destroy_async
+  has_many :platform_app_installations, dependent: :destroy_async
 end

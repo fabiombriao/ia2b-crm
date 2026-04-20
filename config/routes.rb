@@ -197,6 +197,32 @@ Rails.application.routes.draw do
               post :call, on: :member, to: 'calls#create' if ChatwootApp.enterprise?
             end
           end
+
+          namespace :crm do
+            resource :status, only: [:show], controller: :status
+            resources :pipelines, only: [:index, :create, :update] do
+              resources :stages, only: [:create], controller: :stages
+            end
+            resources :stages, only: [:update]
+            resources :deals, only: [:index, :create, :show, :update] do
+              member do
+                patch :move
+                post :mark_won
+                post :mark_lost
+              end
+            end
+            resources :activities, only: [:index, :create, :update] do
+              member do
+                post :complete
+              end
+            end
+            resources :contacts, only: [] do
+              member do
+                get :context
+              end
+            end
+            resource :metrics, only: [:show], controller: :metrics
+          end
           resources :csat_survey_responses, only: [:index] do
             collection do
               get :metrics
@@ -630,6 +656,9 @@ Rails.application.routes.draw do
       resources :accounts, only: [:index, :new, :create, :show, :edit, :update, :destroy] do
         post :seed, on: :member
         post :reset_cache, on: :member
+        post :enable_crm, on: :member
+        post :disable_crm, on: :member
+        post :bootstrap_crm, on: :member
       end
       resources :users, only: [:index, :new, :create, :show, :edit, :update, :destroy] do
         delete :avatar, on: :member, action: :destroy_avatar

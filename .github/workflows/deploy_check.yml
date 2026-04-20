@@ -1,6 +1,6 @@
 ## github action to check deployment success
 ## curl the deployment url and check for 200 status
-## deployment url will be of the form chatwoot-pr-<pr_number>.herokuapp.com
+## deployment url must be configured via repo variable DEPLOY_CHECK_BASE_URL
 name: Deploy Check
 
 on:
@@ -15,23 +15,31 @@ jobs:
   deployment_check:
     name: Check Deployment
     runs-on: ubuntu-latest
+    env:
+      DEPLOY_CHECK_BASE_URL: ${{ vars.DEPLOY_CHECK_BASE_URL }}
     steps:
       - name: Install jq
         run: sudo apt-get install -y jq
       - name: Print Deployment URL
-        run: echo "https://chatwoot-pr-${{ github.event.pull_request.number }}.herokuapp.com"
+        run: echo "${DEPLOY_CHECK_BASE_URL:-<not configured>}"
       - name: Check Deployment Status
         run: |
+          if [ -z "${DEPLOY_CHECK_BASE_URL:-}" ]; then
+            echo "DEPLOY_CHECK_BASE_URL is not configured; skipping deploy check."
+            exit 0
+          fi
+
+          BASE_URL="${DEPLOY_CHECK_BASE_URL%/}"
           max_attempts=10
           attempt=1
           status_code=0
           echo "Waiting for review app to be deployed/redeployed, trying in  10 minutes..."
           sleep 600
           while [ $attempt -le $max_attempts ]; do
-            response=$(curl -s -o /dev/null -w "%{http_code}" https://chatwoot-pr-${{ github.event.pull_request.number }}.herokuapp.com/api)
+            response=$(curl -s --max-time 15 -o /dev/null -w "%{http_code}" "${BASE_URL}/api")
             status_code=$(echo $response | head -n   1)
             if [ $status_code -eq   200 ]; then
-              body=$(curl -s https://chatwoot-pr-${{ github.event.pull_request.number }}.herokuapp.com/api)
+              body=$(curl -s --max-time 15 "${BASE_URL}/api")
               if echo "$body" | jq -e '.version and .timestamp and .queue_services == "ok" and .data_services == "ok"' > /dev/null; then
                 echo "Deployment successful"
                 exit 0
@@ -47,4 +55,3 @@ jobs:
           done
           echo "Deployment failed after $max_attempts attempts"
           exit  1
-          fi

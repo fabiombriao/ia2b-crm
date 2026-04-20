@@ -57,6 +57,27 @@ class SuperAdmin::AccountsController < SuperAdmin::ApplicationController
     # rubocop:enable Rails/I18nLocaleTexts
   end
 
+  def enable_crm
+    Crm::InstallationService.new(account: requested_resource, actor: current_user).enable!
+    # rubocop:disable Rails/I18nLocaleTexts
+    redirect_back(fallback_location: [namespace, requested_resource], notice: 'CRM V2 enabled')
+    # rubocop:enable Rails/I18nLocaleTexts
+  end
+
+  def disable_crm
+    Crm::InstallationService.new(account: requested_resource, actor: current_user).disable!
+    # rubocop:disable Rails/I18nLocaleTexts
+    redirect_back(fallback_location: [namespace, requested_resource], notice: 'CRM V2 disabled')
+    # rubocop:enable Rails/I18nLocaleTexts
+  end
+
+  def bootstrap_crm
+    Crm::InstallationService.new(account: requested_resource, actor: current_user).bootstrap!
+    # rubocop:disable Rails/I18nLocaleTexts
+    redirect_back(fallback_location: [namespace, requested_resource], notice: 'CRM V2 bootstrap triggered')
+    # rubocop:enable Rails/I18nLocaleTexts
+  end
+
   def destroy
     account = Account.find(params[:id])
 

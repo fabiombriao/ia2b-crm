@@ -15,8 +15,7 @@ class Account::SignUpEmailValidationService
 
     raise InvalidEmail.new({ domain_blocked: true }) if domain_blocked?
 
-    # Disabled disposable email check to allow all email providers (gmail, yahoo, hotmail, etc)
-    # raise InvalidEmail.new({ valid: true, disposable: true }) if address.disposable?
+    raise InvalidEmail.new({ valid: true, disposable: true }) if address.disposable?
 
     true
   end

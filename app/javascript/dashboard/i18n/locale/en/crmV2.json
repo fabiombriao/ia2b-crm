@@ -1,0 +1,43 @@
+{
+  "CRM_V2": {
+    "TITLE": "CRM",
+    "LOADING": "Loading CRM…",
+    "ERROR": "Something went wrong",
+    "INSTALLATION_DISABLED": "CRM is not enabled for this account",
+    "FEATURE_DISABLED": "Feature flag (crm_v2) is disabled for this account",
+    "METRICS": {
+      "OPEN_DEALS": "Open deals",
+      "OPEN_VALUE": "Open value",
+      "WON_VALUE": "Won value",
+      "OVERDUE_ACTIVITIES": "Overdue activities"
+    },
+    "CONVERSATION_PANEL": {
+      "TITLE": "CRM",
+      "OPEN_CRM": "Open CRM",
+      "CREATE_DEAL": "Create deal",
+      "OPEN_DEALS": "Open deals",
+      "PENDING_ACTIVITIES": "Pending activities",
+      "CREATE_DEAL_MODAL": {
+        "TITLE": "Create deal",
+        "DEAL_TITLE": "Title",
+        "DEAL_TITLE_PLACEHOLDER": "e.g., Upgrade plan",
+        "PIPELINE": "Pipeline",
+        "STAGE": "Stage",
+        "VALUE": "Value",
+        "VALUE_PLACEHOLDER": "Optional",
+        "SAVE": "Create deal",
+        "SUCCESS": "Deal created",
+        "ERROR": "Could not create deal",
+        "PIPELINES_ERROR": "Could not load pipelines",
+        "NO_PIPELINES": "No pipelines available yet"
+      }
+    },
+    "DEALS": {
+      "TITLE": "Deals",
+      "EMPTY": "No deals found for this contact"
+    }
+  },
+  "SIDEBAR": {
+    "CRM_V2": "CRM"
+  }
+}
