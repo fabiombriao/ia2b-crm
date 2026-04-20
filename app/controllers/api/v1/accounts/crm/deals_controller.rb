@@ -1,0 +1,69 @@
+class Api::V1::Accounts::Crm::DealsController < Api::V1::Accounts::Crm::BaseController
+  before_action -> { authorize([:crm, :deal]) }
+  before_action :fetch_deal, only: [:show, :update, :move, :mark_won, :mark_lost]
+
+  def index
+    @deals = preload_deals(apply_filters(policy_scope(Crm::Deal).order(created_at: :desc)))
+  end
+
+  def show; end
+
+  def create
+    @deal = Crm::Deal.create!(deal_params.merge(account_id: Current.account.id))
+  end
+
+  def update
+    @deal.update!(deal_params)
+  end
+
+  def move
+    stage = stage_scope.find(params.require(:stage_id))
+    @deal.update!(stage_id: stage.id, position: params[:position])
+    render :show
+  end
+
+  def mark_won
+    @deal.update!(status: 'won', closed_at: Time.current)
+    render :show
+  end
+
+  def mark_lost
+    @deal.update!(status: 'lost', closed_at: Time.current, lost_reason: params[:lost_reason])
+    render :show
+  end
+
+  private
+
+  def fetch_deal
+    @deal = policy_scope(Crm::Deal).find(params[:id])
+  end
+
+  def deal_params
+    params.require(:deal).permit(:title, :description, :value, :currency, :expected_close_date, :source, :position, :stage_id, :contact_id, :user_id)
+  end
+
+  def apply_filters(deals)
+    deals = deals.where(status: params[:status]) if params[:status].present?
+    deals = deals.where(stage_id: params[:stage_id]) if params[:stage_id].present?
+    deals = deals.where(contact_id: params[:contact_id]) if params[:contact_id].present?
+    deals = deals.where(user_id: params[:user_id]) if params[:user_id].present?
+
+    if params[:pipeline_id].present?
+      stage_ids = stage_scope.where(pipeline_id: params[:pipeline_id]).select(:id)
+      deals = deals.where(stage_id: stage_ids)
+    end
+
+    deals
+  end
+
+  def stage_scope
+    Crm::Stage.joins(:pipeline).where(crm_pipelines: { account_id: Current.account.id })
+  end
+
+  def preload_deals(deals)
+    deals = deals.includes(:stage) if Crm::Deal.reflect_on_association(:stage).present?
+    deals = deals.includes(:contact) if Crm::Deal.reflect_on_association(:contact).present?
+    deals = deals.includes(:user) if Crm::Deal.reflect_on_association(:user).present?
+    deals
+  end
+end

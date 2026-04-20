@@ -1,0 +1,47 @@
+<section class="main-content__body">
+  <hr/>
+
+  <% crm_feature_enabled = page.resource.feature_enabled?('crm_v2') %>
+  <% crm_installation_service = Crm::InstallationService.new(account: page.resource) %>
+  <% crm_app_enabled = crm_installation_service.enabled? %>
+
+  <div class="pb-3">
+    <p>
+      <%= t('super_admin.accounts.crm_v2.feature_flag_status',
+            status: crm_feature_enabled ? t('super_admin.accounts.crm_v2.enabled') : t('super_admin.accounts.crm_v2.disabled')) %>
+    </p>
+    <p>
+      <%= t('super_admin.accounts.crm_v2.installation_status',
+            status: crm_app_enabled ? t('super_admin.accounts.crm_v2.enabled') : t('super_admin.accounts.crm_v2.disabled')) %>
+    </p>
+  </div>
+
+  <% if crm_app_enabled %>
+    <%= form_for([:disable_crm, namespace, page.resource], method: :post, html: { class: 'form' }) do |f| %>
+      <div class="form-actions">
+        <div class="pb-3">
+          <p><%= t('super_admin.accounts.crm_v2.disable_warning') %></p>
+        </div>
+        <%= f.submit t('super_admin.accounts.crm_v2.disable_button'),
+                     data: { confirm: t('super_admin.accounts.crm_v2.disable_confirm') } %>
+      </div>
+    <% end %>
+
+    <%= form_for([:bootstrap_crm, namespace, page.resource], method: :post, html: { class: 'form' }) do |f| %>
+      <div class="form-actions">
+        <%= f.submit t('super_admin.accounts.crm_v2.bootstrap_button'),
+                     data: { confirm: t('super_admin.accounts.crm_v2.bootstrap_confirm') } %>
+      </div>
+    <% end %>
+  <% else %>
+    <%= form_for([:enable_crm, namespace, page.resource], method: :post, html: { class: 'form' }) do |f| %>
+      <div class="form-actions">
+        <div class="pb-3">
+          <p><%= t('super_admin.accounts.crm_v2.enable_description') %></p>
+        </div>
+        <%= f.submit t('super_admin.accounts.crm_v2.enable_button'),
+                     data: { confirm: t('super_admin.accounts.crm_v2.enable_confirm') } %>
+      </div>
+    <% end %>
+  <% end %>
+</section>

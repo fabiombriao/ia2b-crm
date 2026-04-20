@@ -23,6 +23,7 @@ import ShopifyOrdersList from 'dashboard/components/widgets/conversation/Shopify
 import SidebarActionsHeader from 'dashboard/components-next/SidebarActionsHeader.vue';
 import LinearIssuesList from 'dashboard/components/widgets/conversation/linear/IssuesList.vue';
 import LinearSetupCTA from 'dashboard/components/widgets/conversation/linear/LinearSetupCTA.vue';
+import CrmV2ConversationPanel from './crmV2/CrmV2ConversationPanel.vue';
 
 const props = defineProps({
   conversationId: {
@@ -75,6 +76,10 @@ const isLinearConnected = computed(
 
 const store = useStore();
 const currentChat = useMapGetter('getSelectedChat');
+const accountId = useMapGetter('getCurrentAccountId');
+const isFeatureEnabledonAccount = useMapGetter(
+  'accounts/isFeatureEnabledonAccount'
+);
 const conversationId = computed(() => props.conversationId);
 const conversationMetadataGetter = useMapGetter(
   'conversationMetadata/getConversationMetadata'
@@ -128,6 +133,10 @@ onMounted(() => {
   // Load integrations to ensure linear integration state is available
   store.dispatch('integrations/get', 'linear');
 });
+
+const isCrmV2Enabled = computed(() => {
+  return isFeatureEnabledonAccount.value(accountId.value, FEATURE_FLAGS.CRM_V2);
+});
 </script>
 
 <template>
@@ -137,6 +146,10 @@ onMounted(() => {
       @close="closeContactPanel"
     />
     <ContactInfo :contact="contact" :channel-type="channelType" />
+    <CrmV2ConversationPanel
+      v-if="isCrmV2Enabled && contactId"
+      :contact-id="contactId"
+    />
     <div class="px-2 pb-8 list-group">
       <Draggable
         :list="conversationSidebarItems"

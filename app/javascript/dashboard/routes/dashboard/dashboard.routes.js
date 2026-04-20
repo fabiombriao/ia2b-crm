@@ -9,6 +9,7 @@ import { frontendURL } from '../../helper/URLHelper';
 import helpcenterRoutes from './helpcenter/helpcenter.routes';
 import campaignsRoutes from './campaigns/campaigns.routes';
 import { routes as captainRoutes } from './captain/captain.routes';
+import { routes as crmV2Routes } from './crmV2/routes';
 import AppContainer from './Dashboard.vue';
 import Suspended from './suspended/Index.vue';
 import NoAccounts from './noAccounts/Index.vue';
@@ -25,6 +26,7 @@ export default {
         ...settings.routes,
         ...contactRoutes,
         ...companyRoutes,
+        ...crmV2Routes,
         ...searchRoutes,
         ...notificationRoutes,
         ...helpcenterRoutes.routes,

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_04_16_000717) do
+ActiveRecord::Schema[7.1].define(version: 2026_04_20_103200) do
   # These extensions should be enabled to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
@@ -767,7 +767,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_16_000717) do
   end
 
   create_table "crm_activities", force: :cascade do |t|
-    t.string "type", null: false
+    t.string "activity_type", null: false
     t.string "subject", null: false
     t.text "description"
     t.datetime "due_at"
@@ -778,7 +778,9 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_16_000717) do
     t.integer "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "completed_at"
     t.index ["account_id", "completed"], name: "index_crm_activities_on_account_id_and_completed"
+    t.index ["account_id", "due_at"], name: "index_crm_activities_on_account_id_and_due_at"
     t.index ["account_id"], name: "index_crm_activities_on_account_id"
     t.index ["contact_id"], name: "index_crm_activities_on_contact_id"
     t.index ["deal_id"], name: "index_crm_activities_on_deal_id"
@@ -809,10 +811,20 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_16_000717) do
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status", default: "open", null: false
+    t.string "currency"
+    t.date "expected_close_date"
+    t.datetime "closed_at"
+    t.text "lost_reason"
+    t.string "source"
+    t.integer "position"
+    t.index ["account_id", "status"], name: "index_crm_deals_on_account_id_and_status"
     t.index ["account_id"], name: "index_crm_deals_on_account_id"
     t.index ["company_id"], name: "index_crm_deals_on_company_id"
     t.index ["contact_id"], name: "index_crm_deals_on_contact_id"
+    t.index ["stage_id", "position"], name: "index_crm_deals_on_stage_id_and_position"
     t.index ["stage_id"], name: "index_crm_deals_on_stage_id"
+    t.index ["user_id", "status"], name: "index_crm_deals_on_user_id_and_status"
     t.index ["user_id"], name: "index_crm_deals_on_user_id"
   end
 
@@ -1160,6 +1172,19 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_16_000717) do
     t.index ["secondary_actor_type", "secondary_actor_id"], name: "uniq_secondary_actor_per_account_notifications"
     t.index ["user_id", "account_id", "snoozed_until", "read_at"], name: "idx_notifications_performance"
     t.index ["user_id"], name: "index_notifications_on_user_id"
+  end
+
+  create_table "platform_app_installations", force: :cascade do |t|
+    t.bigint "platform_app_id", null: false
+    t.integer "account_id", null: false
+    t.boolean "enabled", default: false, null: false
+    t.jsonb "settings", default: {}, null: false
+    t.bigint "installed_by_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_platform_app_installations_on_account_id"
+    t.index ["platform_app_id", "account_id"], name: "index_platform_app_installations_on_app_and_account", unique: true
+    t.index ["platform_app_id"], name: "index_platform_app_installations_on_platform_app_id"
   end
 
   create_table "platform_app_permissibles", force: :cascade do |t|

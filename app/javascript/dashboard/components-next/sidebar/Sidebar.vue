@@ -1,5 +1,5 @@
 <script setup>
-import { h, ref, computed, onMounted } from 'vue';
+import { h, ref, computed, onMounted, watch } from 'vue';
 import { provideSidebarContext, useSidebarResize } from './provider';
 import { useAccount } from 'dashboard/composables/useAccount';
 import { useKbd } from 'dashboard/composables/utils/useKbd';
@@ -23,6 +23,7 @@ import ChannelIcon from 'next/icon/ChannelIcon.vue';
 import SidebarAccountSwitcher from './SidebarAccountSwitcher.vue';
 import Logo from 'next/icon/Logo.vue';
 import ComposeConversation from 'dashboard/components-next/NewConversation/ComposeConversation.vue';
+import crmV2StatusAPI from 'dashboard/api/crmV2/status';
 
 const props = defineProps({
   isMobileSidebarOpen: {
@@ -62,6 +63,37 @@ const hasAdvancedAssignment = computed(() => {
     FEATURE_FLAGS.ADVANCED_ASSIGNMENT
   );
 });
+
+const hasCrmV2 = computed(() => {
+  return isFeatureEnabledonAccount.value(accountId.value, FEATURE_FLAGS.CRM_V2);
+});
+
+const crmV2Status = ref(null);
+const isCrmV2StatusLoading = ref(false);
+
+const shouldShowCrmV2 = computed(() => {
+  if (!hasCrmV2.value) return false;
+  return crmV2Status.value?.enabled === true;
+});
+
+watch(
+  [accountId, hasCrmV2],
+  async ([_accountId, isEnabled]) => {
+    crmV2Status.value = null;
+    if (!_accountId || !isEnabled) return;
+
+    isCrmV2StatusLoading.value = true;
+    try {
+      const response = await crmV2StatusAPI.getCached();
+      crmV2Status.value = response.data;
+    } catch (error) {
+      crmV2Status.value = null;
+    } finally {
+      isCrmV2StatusLoading.value = false;
+    }
+  },
+  { immediate: true }
+);
 
 const toggleShortcutModalFn = show => {
   if (show) {
@@ -472,6 +504,17 @@ const menuItems = computed(() => {
         },
       ],
     },
+    ...(shouldShowCrmV2.value && !isCrmV2StatusLoading.value
+      ? [
+          {
+            name: 'CRM',
+            label: t('SIDEBAR.CRM_V2'),
+            icon: 'i-lucide-briefcase',
+            to: accountScopedRoute('crm_v2_index'),
+            activeOn: ['crm_v2_index'],
+          },
+        ]
+      : []),
     {
       name: 'Reports',
       label: t('SIDEBAR.REPORTS'),
