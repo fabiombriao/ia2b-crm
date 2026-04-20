@@ -18,11 +18,31 @@ jobs:
     steps:
       - name: Configure SSH
         shell: bash
+        env:
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_SSH_KEY_B64: ${{ secrets.VPS_SSH_KEY_B64 }}
         run: |
           set -euo pipefail
           mkdir -p ~/.ssh
-          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
+          if [[ -n "${VPS_SSH_KEY_B64:-}" ]]; then
+            echo "${VPS_SSH_KEY_B64}" | base64 -d > ~/.ssh/id_rsa
+          else
+            printf '%s' "${VPS_SSH_KEY:-}" > ~/.ssh/id_rsa
+          fi
+
+          tr -d '\r' < ~/.ssh/id_rsa > ~/.ssh/id_rsa.tmp && mv ~/.ssh/id_rsa.tmp ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+
+          if ! grep -q "PRIVATE KEY" ~/.ssh/id_rsa; then
+            echo "Invalid VPS_SSH_KEY: expected a PRIVATE key (BEGIN ... PRIVATE KEY)."
+            echo "Tip: if your secret is losing newlines, store it as base64 in VPS_SSH_KEY_B64."
+            exit 1
+          fi
+
+          if ! ssh-keygen -y -f ~/.ssh/id_rsa >/dev/null 2>&1; then
+            echo "SSH key is unreadable or encrypted with a passphrase. Use an unencrypted deploy key."
+            exit 1
+          fi
 
       - name: Deploy (git pull + rebuild + migrate)
         shell: bash
