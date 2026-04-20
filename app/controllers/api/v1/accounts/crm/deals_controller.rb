@@ -43,17 +43,19 @@ class Api::V1::Accounts::Crm::DealsController < Api::V1::Accounts::Crm::BaseCont
   end
 
   def apply_filters(deals)
-    deals = deals.where(status: params[:status]) if params[:status].present?
-    deals = deals.where(stage_id: params[:stage_id]) if params[:stage_id].present?
-    deals = deals.where(contact_id: params[:contact_id]) if params[:contact_id].present?
-    deals = deals.where(user_id: params[:user_id]) if params[:user_id].present?
+    deals = deals.where(filter_params) if filter_params.present?
 
-    if params[:pipeline_id].present?
-      stage_ids = stage_scope.where(pipeline_id: params[:pipeline_id]).select(:id)
-      deals = deals.where(stage_id: stage_ids)
-    end
+    deals = deals.where(stage_id: stage_ids_for_pipeline(params[:pipeline_id])) if params[:pipeline_id].present?
 
     deals
+  end
+
+  def filter_params
+    @filter_params ||= params.permit(:status, :stage_id, :contact_id, :user_id).to_h.compact_blank
+  end
+
+  def stage_ids_for_pipeline(pipeline_id)
+    stage_scope.where(pipeline_id: pipeline_id).select(:id)
   end
 
   def stage_scope

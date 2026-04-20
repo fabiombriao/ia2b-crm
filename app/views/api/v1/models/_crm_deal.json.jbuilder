@@ -21,4 +21,3 @@ if defined?(with_stage) && with_stage.present? && resource.respond_to?(:stage) &
     json.partial! 'api/v1/models/crm_stage', formats: [:json], resource: resource.stage
   end
 end
-

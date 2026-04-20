@@ -9,4 +9,3 @@ json.installation do
     json.account_id @crm_installation.account_id
   end
 end
-

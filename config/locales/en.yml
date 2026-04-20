@@ -78,26 +78,11 @@ en:
       unexpected: 'An unexpected error occurred'
     saml:
       feature_not_enabled: SAML feature not enabled for this account
+      sso_not_enabled: SAML SSO is not enabled for this installation
     crm:
       not_installed: CRM is not enabled for this account
       access_denied: You are not authorized to access CRM
 
-  super_admin:
-    accounts:
-      crm_v2:
-        enabled: Enabled
-        disabled: Disabled
-        feature_flag_status: 'Feature flag (crm_v2): %{status}'
-        installation_status: 'CRM installation: %{status}'
-        enable_description: Enable CRM for this account (does not automatically toggle the feature flag).
-        enable_button: Enable CRM
-        enable_confirm: Enable CRM for this account?
-        disable_warning: Disabling CRM may hide UI and block APIs, but will not delete CRM data.
-        disable_button: Disable CRM
-        disable_confirm: Disable CRM for this account?
-        bootstrap_button: Bootstrap CRM
-        bootstrap_confirm: Run CRM bootstrap for this account?
-      sso_not_enabled: SAML SSO is not enabled for this installation
     data_import:
       data_type:
         invalid: Invalid data type
@@ -173,6 +158,22 @@ en:
       no_payment_method: No payment methods found. Please add a payment method before making a purchase.
     reports:
       date_range_too_long: Date range cannot exceed 6 months
+
+  super_admin:
+    accounts:
+      crm_v2:
+        enabled: Enabled
+        disabled: Disabled
+        feature_flag_status: 'Feature flag (crm_v2): %{status}'
+        installation_status: 'CRM installation: %{status}'
+        enable_description: Enable CRM for this account (does not automatically toggle the feature flag).
+        enable_button: Enable CRM
+        enable_confirm: Enable CRM for this account?
+        disable_warning: Disabling CRM may hide UI and block APIs, but will not delete CRM data.
+        disable_button: Disable CRM
+        disable_confirm: Disable CRM for this account?
+        bootstrap_button: Bootstrap CRM
+        bootstrap_confirm: Run CRM bootstrap for this account?
   profile:
     mfa:
       enabled: MFA enabled successfully

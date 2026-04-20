@@ -12,4 +12,3 @@ if defined?(with_stages) && with_stages.present?
     end
   end
 end
-

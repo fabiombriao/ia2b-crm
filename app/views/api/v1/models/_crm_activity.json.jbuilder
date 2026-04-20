@@ -11,4 +11,3 @@ json.contact_id resource.contact_id
 json.user_id resource.user_id
 json.created_at resource.created_at.to_i if resource[:created_at].present?
 json.updated_at resource.updated_at.to_i if resource[:updated_at].present?
-
