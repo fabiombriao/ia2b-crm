@@ -2,6 +2,7 @@
 
 class Account::SignUpEmailValidationService
   include CustomExceptions::Account
+
   attr_reader :email
 
   def initialize(email)
@@ -10,12 +11,12 @@ class Account::SignUpEmailValidationService
 
   def perform
     address = ValidEmail2::Address.new(email)
-
     raise InvalidEmail.new({ valid: false, disposable: nil }) unless address.valid?
 
     raise InvalidEmail.new({ domain_blocked: true }) if domain_blocked?
 
-    raise InvalidEmail.new({ valid: true, disposable: true }) if address.disposable?
+    # Disabled disposable email check to allow all email providers (gmail, yahoo, hotmail, etc)
+    # raise InvalidEmail.new({ valid: true, disposable: true }) if address.disposable?
 
     true
   end
