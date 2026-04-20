@@ -1,0 +1,64 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch: {}
+
+concurrency:
+  group: vps-deploy-develop
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Configure SSH
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Deploy (git pull + rebuild + migrate)
+        shell: bash
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_PORT: ${{ secrets.VPS_PORT }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${VPS_HOST}" || -z "${VPS_PORT}" || -z "${VPS_USER}" ]]; then
+            echo "Missing one of: VPS_HOST, VPS_PORT, VPS_USER"
+            exit 1
+          fi
+
+          ssh -i ~/.ssh/id_rsa \
+            -o StrictHostKeyChecking=no \
+            -o UserKnownHostsFile=/dev/null \
+            -p "${VPS_PORT}" \
+            "${VPS_USER}@${VPS_HOST}" \
+            'bash -lc '"'"'
+              set -euo pipefail
+
+              cd /opt/ia2b/ia2b-crm
+              git fetch origin develop
+              git checkout develop
+              git reset --hard origin/develop
+
+              cd /opt/ia2b/chatwoot
+              docker compose build rails
+              docker compose up -d
+
+              docker compose exec -T rails sh -lc "POSTGRES_STATEMENT_TIMEOUT=600s bundle exec rails db:chatwoot_prepare"
+              docker compose restart rails sidekiq
+
+              command -v curl >/dev/null 2>&1 && curl -sk --max-time 15 https://ia2bhub.duckdns.org/api || true
+              echo
+              echo "DEPLOY_OK"
+            '"'"''
+
