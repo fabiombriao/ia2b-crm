@@ -1,0 +1,62 @@
+// Modificações necessárias no AdminDashboard.tsx para integrar CoachNotesPanel
+// Este arquivo contém as mudanças que devem ser aplicadas
+
+// 1. Atualizar as importações (já feito)
+
+// 2. Remover estas linhas de estado (linhas 84-87):
+//   const [note, setNote] = useState('');
+//   const [userNotes, setUserNotes] = useState<any[]>([]);
+//   const [notesLoading, setNotesLoading] = useState(false);
+//   const [notesError, setNotesError] = useState<string | null>(null);
+
+// 3. Remover a função fetchUserNotes (linhas 337-355)
+
+// 4. Remover a função handleAddNote (linhas 357-376)
+
+// 5. Adicionar coluna de notas na tabela de usuários (entre "Cadastro" e "Ações")
+//    No thead (após linha 717):
+//    <th className="p-6 text-[10px] font-black uppercase tracking-[0.2em] text-neutral-600">Notas</th>
+
+//    No tbody (após linha 759):
+//    <td className="p-6">
+//      {(function() {
+//        const stats = notesStatsByAluno[user.id];
+//        if (!stats || stats.total_notes === 0) {
+//          return <span className="text-[8px] text-neutral-700 font-mono">-</span>;
+//        }
+//        return (
+//          <div className="flex items-center gap-2">
+//            <span className="text-[8px] text-neutral-500 font-mono">{stats.total_notes}</span>
+//            {stats.unread_notes > 0 && (
+//              <span className="inline-flex items-center gap-1 rounded-lg border border-amber-500/20 bg-amber-500/10 px-2 py-0.5 text-[8px] font-black uppercase tracking-wider text-amber-400">
+//                <MessageSquare className="w-3 h-3" />
+//                {stats.unread_notes}
+//              </span>
+//            )}
+//            {stats.recent_notes_24h > 0 && (
+//              <span className="inline-flex items-center gap-1 rounded-lg border border-brand-green/20 bg-brand-green/10 px-2 py-0.5 text-[8px] font-black uppercase tracking-wider text-brand-green">
+//                NOVA
+//              </span>
+//            )}
+//          </div>
+//        );
+//      })()}
+//    </td>
+
+// 6. Atualizar o click handler na linha da tabela (linha 731):
+//    Trocar:
+//      onClick={() => {
+//        setSelectedUser(user);
+//        fetchUserNotes(user.id);
+//      }}
+//    Por:
+//      onClick={() => setSelectedUser(user)}
+
+// 7. Substituir todo o conteúdo do modal (linhas 750-850) por:
+//    <CoachNotesPanel
+//      aluno={selectedUser}
+//      treinador={profile}
+//      onClose={() => setSelectedUser(null)}
+//    />
+
+// 8. Atualizar a seção de membros da turma para mostrar badges de notas (opcional)
